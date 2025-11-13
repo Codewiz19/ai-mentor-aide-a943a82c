@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Check, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Calendar, Check, X, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface MeetingRequest {
@@ -15,6 +17,8 @@ interface MeetingRequest {
 
 const MeetingManagement = () => {
   const { toast } = useToast();
+  const [newStudentId, setNewStudentId] = useState("");
+  const [newTopic, setNewTopic] = useState("");
   const [meetings, setMeetings] = useState<MeetingRequest[]>([
     {
       id: "1",
@@ -77,6 +81,33 @@ const MeetingManagement = () => {
     });
   };
 
+  const handleCreateMeeting = () => {
+    if (!newStudentId.trim() || !newTopic.trim()) {
+      toast({
+        title: "Error",
+        description: "Please fill in both Student ID and Topic",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newMeeting: MeetingRequest = {
+      id: Date.now().toString(),
+      studentId: newStudentId,
+      requestedAt: new Date(),
+      status: "confirmed",
+      topic: newTopic,
+    };
+
+    setMeetings((prev) => [...prev, newMeeting]);
+    toast({
+      title: "Meeting Created",
+      description: `Meeting scheduled with ${newStudentId}`,
+    });
+    setNewStudentId("");
+    setNewTopic("");
+  };
+
   const pendingMeetings = meetings.filter((m) => m.status === "pending");
   const confirmedMeetings = meetings.filter((m) => m.status === "confirmed");
 
@@ -86,6 +117,37 @@ const MeetingManagement = () => {
         <h2 className="text-2xl font-semibold text-foreground mb-2">Meeting Management</h2>
         <p className="text-muted-foreground">Handle student meeting requests and schedules</p>
       </div>
+
+      <Card className="p-6 mb-6 bg-card border-border">
+        <div className="flex items-center gap-2 mb-4">
+          <Plus className="w-5 h-5 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">Create New Meeting</h3>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="studentId">Student ID</Label>
+            <Input
+              id="studentId"
+              placeholder="e.g., MIS2023001"
+              value={newStudentId}
+              onChange={(e) => setNewStudentId(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="topic">Meeting Topic</Label>
+            <Input
+              id="topic"
+              placeholder="e.g., Research methodology discussion"
+              value={newTopic}
+              onChange={(e) => setNewTopic(e.target.value)}
+            />
+          </div>
+        </div>
+        <Button onClick={handleCreateMeeting} className="mt-4 bg-primary hover:bg-primary/90">
+          <Plus className="w-4 h-4 mr-2" />
+          Create Meeting
+        </Button>
+      </Card>
 
       <div className="space-y-6">
         <div>
