@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Calendar, LogOut } from "lucide-react";
+import { Send, Calendar, LogOut, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 
@@ -71,6 +71,13 @@ const StudentChat = ({ studentId }: StudentChatProps) => {
     setShowMeetingSuggestion(false);
   };
 
+  const handleDirectMeetingRequest = () => {
+    toast({
+      title: "Meeting Requested",
+      description: "Your meeting request has been sent to the admin.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b border-border bg-card px-4 py-3">
@@ -79,10 +86,16 @@ const StudentChat = ({ studentId }: StudentChatProps) => {
             <h2 className="font-semibold text-foreground">AI Research Mentor</h2>
             <p className="text-xs text-muted-foreground">Student ID: {studentId}</p>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => window.location.reload()}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleDirectMeetingRequest}>
+              <Calendar className="w-4 h-4 mr-2" />
+              Request Meeting
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => window.location.reload()}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 
